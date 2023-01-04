@@ -11,7 +11,7 @@ import SwiftUI
 struct What_time_is_itApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainView()
         }
     }
 }
