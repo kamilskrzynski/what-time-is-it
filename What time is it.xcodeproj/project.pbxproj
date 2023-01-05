@@ -57,13 +57,11 @@
 		37061C3829633C390062E018 /* What time is it */ = {
 			isa = PBXGroup;
 			children = (
-				37061C3929633C390062E018 /* What_time_is_itApp.swift */,
-				37061C3B29633C390062E018 /* MainView.swift */,
-				37061C3D29633C3B0062E018 /* Assets.xcassets */,
-				37061C3F29633C3B0062E018 /* Preview Content */,
-				3793FD1B296456EF0052402A /* APIHandler.swift */,
-				3793FD1D296458D30052402A /* TimeViewModel.swift */,
-				3793FD392965BDB70052402A /* MainViewModel.swift */,
+				3793FD3F2965E1C50052402A /* Core */,
+				3793FD3E2965E1BF0052402A /* Views */,
+				3793FD3D2965E1B30052402A /* Managers */,
+				3793FD3C2965E1A90052402A /* Models */,
+				3793FD3B2965E1A40052402A /* ViewModels */,
 			);
 			path = "What time is it";
 			sourceTree = "<group>";
@@ -74,6 +72,48 @@
 				37061C4029633C3B0062E018 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		3793FD3B2965E1A40052402A /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				3793FD392965BDB70052402A /* MainViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		3793FD3C2965E1A90052402A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				3793FD1D296458D30052402A /* TimeViewModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		3793FD3D2965E1B30052402A /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				3793FD1B296456EF0052402A /* APIHandler.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		3793FD3E2965E1BF0052402A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				37061C3B29633C390062E018 /* MainView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		3793FD3F2965E1C50052402A /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				37061C3929633C390062E018 /* What_time_is_itApp.swift */,
+				37061C3D29633C3B0062E018 /* Assets.xcassets */,
+				37061C3F29633C3B0062E018 /* Preview Content */,
+			);
+			path = Core;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -278,7 +318,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"What time is it/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"What time is it/Core/Preview Content\"";
 				DEVELOPMENT_TEAM = 4B76WUX67Y;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -307,7 +347,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"What time is it/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"What time is it/Core/Preview Content\"";
 				DEVELOPMENT_TEAM = 4B76WUX67Y;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

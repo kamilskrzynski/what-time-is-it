@@ -5,36 +5,58 @@
 //  Created by Kamil Skrzyński on 04/01/2023.
 //
 
-enum TimeStyle {
-    case time, date
-}
-
 import Foundation
 
 final class MainViewModel: ObservableObject {
     
-    public func getTime(for city: String, timeStyle: TimeStyle) -> Date {
-        var time: Date = Date()
+    @Published var time: Date = Date()
+    @Published var date: Date = Date()
+    @Published var citiesDict = [String: Date]()
+    
+    let localizationsArray = TimeZone.knownTimeZoneIdentifiers
+    let cities = ["Los Angeles", "New York", "London", "Paris", "Kiev", "Pekin", "Tokyo"]
+    
+    public func getTime(for city: String) {
         APIHandler.shared.getTime(for: city) { timeViewModel in
+            var timeComponents = DateComponents()
+            timeComponents.hour = timeViewModel.hour
+            timeComponents.minute = timeViewModel.minute
+            timeComponents.second = timeViewModel.seconds
             
-            switch timeStyle {
-            case .time:
+            DispatchQueue.main.async {
+                self.time = Calendar.current.date(from: timeComponents)!
+            }
+        }
+    }
+    
+    public func getDate(for city: String) {
+        APIHandler.shared.getTime(for: city) { timeViewModel in
+            var dateComponents = DateComponents()
+            dateComponents.day = timeViewModel.day
+            dateComponents.month = timeViewModel.month
+            dateComponents.year = timeViewModel.year
+            
+            DispatchQueue.main.async {
+                self.date = Calendar.current.date(from: dateComponents)!
+            }
+        }
+    }
+    
+    func getLocalTimes() {
+        for city in cities {
+            let changedCity = city.replacingOccurrences(of: " ", with: "_")
+            print("changedCity: \(changedCity)")
+            APIHandler.shared.getTime(for: localizationsArray.first(where: { $0.contains(changedCity)}) ?? "") { timeViewModel in
                 var timeComponents = DateComponents()
                 timeComponents.hour = timeViewModel.hour
                 timeComponents.minute = timeViewModel.minute
-                timeComponents.second = timeViewModel.seconds
-                
-                time = Calendar.current.date(from: timeComponents) ?? Date()
-            case .date:
-                var dateComponents = DateComponents()
-                dateComponents.day = timeViewModel.day
-                dateComponents.month = timeViewModel.month
-                dateComponents.year = timeViewModel.year
-                
-                time = Calendar.current.date(from: dateComponents) ?? Date()
+            
+                DispatchQueue.main.async {
+                    self.citiesDict.updateValue(Calendar.current.date(from: timeComponents)!, forKey: city)
+                    
+                }
             }
         }
-        return time
     }
     
     public func getAbbrevation(from localization: String) -> String {
