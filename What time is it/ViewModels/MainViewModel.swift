@@ -121,6 +121,32 @@ final class MainViewModel: ObservableObject {
             timezoneAbbr = String("Eastern Standard Time (\(timezoneComponents.first!))")
         }
         
+        /// Eastern European Time (EET)
+        else if timezone.contains("EET") && timezone.contains("+") {
+            let timezoneComponents = timezone.components(separatedBy: "+")
+            timezoneAbbr = String("Eastern European Time (\(timezoneComponents.first!)) +\(timezoneComponents.last!)")
+        }
+        else if timezone.contains("EET") && timezone.contains("-") {
+            let timezoneComponents = timezone.components(separatedBy: "-")
+            timezoneAbbr = String("Eastern European Time (\(timezoneComponents.first!)) -\(timezoneComponents.last!)")
+        } else if timezone.contains("EET"){
+            let timezoneComponents = timezone.components(separatedBy: "+")
+            timezoneAbbr = String("Eastern European Time (\(timezoneComponents.first!))")
+        }
+        
+        /// Western European Time (WET)
+        else if timezone.contains("WET") && timezone.contains("+") {
+            let timezoneComponents = timezone.components(separatedBy: "+")
+            timezoneAbbr = String("Western European Time (\(timezoneComponents.first!)) +\(timezoneComponents.last!)")
+        }
+        else if timezone.contains("WET") && timezone.contains("-") {
+            let timezoneComponents = timezone.components(separatedBy: "-")
+            timezoneAbbr = String("Western European Time (\(timezoneComponents.first!)) -\(timezoneComponents.last!)")
+        } else if timezone.contains("WET"){
+            let timezoneComponents = timezone.components(separatedBy: "+")
+            timezoneAbbr = String("Western European Time (\(timezoneComponents.first!))")
+        }
+        
         return timezoneAbbr
     }
     

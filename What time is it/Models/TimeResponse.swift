@@ -1,5 +1,5 @@
 //
-//  TimeViewModel.swift
+//  TimeResponse.swift
 //  What time is it
 //
 //  Created by Kamil Skrzyński on 03/01/2023.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TimeViewModel: Codable {
+struct TimeResponse: Codable {
     
     let year: Int
     let month: Int

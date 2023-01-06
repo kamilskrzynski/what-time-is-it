@@ -9,12 +9,18 @@
 import Foundation
 import Combine
 
+enum Endpoint: String {
+    case time = "Time/current/zone?timeZone="
+    case conversion = "Conversion/DayOfTheYear/"
+}
+
 final class APIHandler {
     
     static let shared = APIHandler()
+    static let basicUrl = "https://www.timeapi.io/api/"
     
-    func getTime(for timezone: String, completionHandler: @escaping (TimeViewModel) -> Void) {
-        guard let url = URL(string: "https://www.timeapi.io/api/Time/current/zone?timeZone=\(timezone)") else {
+    func getTime(for timezone: String, completionHandler: @escaping (TimeResponse) -> Void) {
+        guard let url = URL(string: "\(APIHandler.basicUrl)\(Endpoint.time)\(timezone)") else {
             fatalError("Wrong URL")
         }
         
@@ -31,10 +37,16 @@ final class APIHandler {
             }
             
             if let data = data,
-               let timeViewModel = try? JSONDecoder().decode(TimeViewModel.self, from: data) {
+               let timeViewModel = try? JSONDecoder().decode(TimeResponse.self, from: data) {
                 completionHandler(timeViewModel)
             }
         }
         task.resume()
+    }
+    
+    func getDayOfTheYear(year: String, month: String, day: String, completionHandler: @escaping (DayOfTheYearResponse) -> Void) {
+        guard let url = URL(string: "\(APIHandler.basicUrl)\(Endpoint.conversion)\(year)-\(month)-\(day)") else {
+            fatalError("Wrong URL")
+        }
     }
 }
