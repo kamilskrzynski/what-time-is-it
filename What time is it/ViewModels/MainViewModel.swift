@@ -14,7 +14,7 @@ final class MainViewModel: ObservableObject {
     @Published var citiesDict = [String: Date]()
     
     let localizationsArray = TimeZone.knownTimeZoneIdentifiers
-    let cities = ["Los Angeles", "New York", "London", "Paris", "Kiev", "Pekin", "Tokyo"]
+    let cities = ["Los Angeles", "New York", "London", "Paris", "Kiev", "Tokyo"]
     
     public func getTime(for city: String) {
         APIHandler.shared.getTime(for: city) { timeViewModel in
@@ -45,7 +45,6 @@ final class MainViewModel: ObservableObject {
     func getLocalTimes() {
         for city in cities {
             let changedCity = city.replacingOccurrences(of: " ", with: "_")
-            print("changedCity: \(changedCity)")
             APIHandler.shared.getTime(for: localizationsArray.first(where: { $0.contains(changedCity)}) ?? "") { timeViewModel in
                 var timeComponents = DateComponents()
                 timeComponents.hour = timeViewModel.hour
