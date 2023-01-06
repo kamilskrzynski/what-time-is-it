@@ -13,6 +13,14 @@ final class MainViewModel: ObservableObject {
     @Published var date: Date = Date()
     @Published var citiesDict = [String: Date]()
     
+    @Published var isSearchToggle = false
+    @Published var searchText = ""
+    @Published var localization = TimeZone.current.identifier
+    @Published var localizationName = ""
+    
+    let timeFormatter = DateFormatter()
+    let dateFormatter = DateFormatter()
+    let shortTimeFormatter = DateFormatter()
     let localizationsArray = TimeZone.knownTimeZoneIdentifiers
     let cities = ["Los Angeles", "New York", "London", "Paris", "Kiev", "Tokyo"]
     
@@ -49,7 +57,7 @@ final class MainViewModel: ObservableObject {
                 var timeComponents = DateComponents()
                 timeComponents.hour = timeViewModel.hour
                 timeComponents.minute = timeViewModel.minute
-            
+                
                 DispatchQueue.main.async {
                     self.citiesDict.updateValue(Calendar.current.date(from: timeComponents)!, forKey: city)
                     
@@ -114,5 +122,23 @@ final class MainViewModel: ObservableObject {
         }
         
         return timezoneAbbr
+    }
+    
+    /// Setting up formatters
+    func setupFormatters() {
+        // timeFormatter
+        timeFormatter.dateFormat = "HH:mm:ss"
+        
+        // dateFormatter
+        dateFormatter.locale = Locale(identifier: "en_us")
+        dateFormatter.dateFormat = "EEEE, MMMM d YYYY"
+        
+        // shortTimeFormatter
+        shortTimeFormatter.dateFormat = "HH:mm"
+    }
+    
+    func getLocalizationName() {
+        let localizationArray = localization.components(separatedBy: "/")
+        localizationName = localizationArray.last!.replacingOccurrences(of: "_", with: " ")
     }
 }

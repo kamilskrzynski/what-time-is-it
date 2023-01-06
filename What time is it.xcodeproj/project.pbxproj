@@ -14,6 +14,7 @@
 		3793FD1C296456EF0052402A /* APIHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3793FD1B296456EF0052402A /* APIHandler.swift */; };
 		3793FD1E296458D30052402A /* TimeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3793FD1D296458D30052402A /* TimeViewModel.swift */; };
 		3793FD3A2965BDB70052402A /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3793FD392965BDB70052402A /* MainViewModel.swift */; };
+		3793FD41296887FE0052402A /* Color+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3793FD40296887FE0052402A /* Color+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		3793FD1B296456EF0052402A /* APIHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIHandler.swift; sourceTree = "<group>"; };
 		3793FD1D296458D30052402A /* TimeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeViewModel.swift; sourceTree = "<group>"; };
 		3793FD392965BDB70052402A /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
+		3793FD40296887FE0052402A /* Color+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 		37061C3829633C390062E018 /* What time is it */ = {
 			isa = PBXGroup;
 			children = (
+				3793FD42296888020052402A /* Extensions */,
 				3793FD3F2965E1C50052402A /* Core */,
 				3793FD3E2965E1BF0052402A /* Views */,
 				3793FD3D2965E1B30052402A /* Managers */,
@@ -114,6 +117,14 @@
 				37061C3F29633C3B0062E018 /* Preview Content */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		3793FD42296888020052402A /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				3793FD40296887FE0052402A /* Color+Extensions.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -191,6 +202,7 @@
 				3793FD1E296458D30052402A /* TimeViewModel.swift in Sources */,
 				37061C3C29633C390062E018 /* MainView.swift in Sources */,
 				37061C3A29633C390062E018 /* What_time_is_itApp.swift in Sources */,
+				3793FD41296887FE0052402A /* Color+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

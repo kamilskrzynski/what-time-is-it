@@ -11,17 +11,6 @@ struct MainView: View {
     
     @State var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State var timer2 = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
-    @State var timeNow = ""
-    @State var dateNow = ""
-    @State var time: Date = Date()
-    @State var date: Date = Date()
-    let timeFormatter = DateFormatter()
-    let dateFormatter = DateFormatter()
-    let shortTimeFormatter = DateFormatter()
-    @State var isSearchToggle = false
-    @State var searchText = ""
-    @State var localization = TimeZone.current.identifier
-    @State var localizationName = ""
     
     @StateObject private var viewModel = MainViewModel()
     
@@ -47,22 +36,22 @@ struct MainView: View {
             }
             .background(Color.white)
             .onReceive(timer2) { _ in
-                getLocalizationName()
+                viewModel.getLocalizationName()
             }
             .onAppear {
-                getLocalizationName()
-                setupFormatters()
+                viewModel.getLocalizationName()
+                viewModel.setupFormatters()
             }
-            if isSearchToggle {
+            if viewModel.isSearchToggle {
                 VStack(spacing: 0) {
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .font(.title3)
                             .foregroundColor(.black.opacity(0.5))
-                        TextField("Search", text: $searchText)
+                        TextField("Search", text: $viewModel.searchText)
                         Button {
                             withAnimation {
-                                isSearchToggle = false
+                                viewModel.isSearchToggle = false
                             }
                         } label: {
                             Image(systemName: "xmark")
@@ -71,31 +60,31 @@ struct MainView: View {
                         }
                     }
                     .padding()
-                    .background(Color("appLight"))
+                    .background(Color.appLight)
                     .padding(.vertical, 4)
                     
-                    ForEach(viewModel.localizationsArray.filter { $0.components(separatedBy: "/").contains(searchText) }, id: \.self) { result in
+                    ForEach(viewModel.localizationsArray.filter { $0.replacingOccurrences(of: "_", with: " ").lowercased().components(separatedBy: "/").contains(viewModel.searchText.lowercased()) }, id: \.self) { result in
                         Button {
                             withAnimation {
-                                    localization = result
-                                    isSearchToggle = false
+                                viewModel.localization = result
+                                viewModel.isSearchToggle = false
                             }
                         } label: {
                             HStack {
                                 VStack(alignment: .leading) {
-                                    Text(result.components(separatedBy: "/")[1])
+                                    Text(result.components(separatedBy: "/")[1].replacingOccurrences(of: "_", with: " "))
                                         .font(.title3)
                                         .bold()
                                     Text(result)
                                         .font(.caption2)
                                         .fontWeight(.light)
                                 }
-                                .foregroundColor(Color("appGrey"))
+                                .foregroundColor(Color.appGrey)
                                 Spacer()
                             }
                             .padding(.horizontal)
                             .padding(.vertical, 2)
-                            .background(Color("appLight"))
+                            .background(Color.appLight)
                         }
                     }
                     Spacer()
@@ -111,14 +100,14 @@ struct MainView: View {
                 Spacer()
                 Button {
                     withAnimation {
-                        isSearchToggle.toggle()
+                        viewModel.isSearchToggle.toggle()
                     }
                 } label: {
                     Image(systemName: "magnifyingglass")
                         .font(.title3)
                         .foregroundColor(.black.opacity(0.5))
                 }
-                .disabled(isSearchToggle)
+                .disabled(viewModel.isSearchToggle)
             }
             .padding()
             .background(Color.clear)
@@ -131,29 +120,25 @@ struct MainView: View {
                 .padding(.horizontal, 6)
                 .background(
                     Rectangle()
-                        .foregroundColor(Color("appRed"))
+                        .foregroundColor(Color.appRed)
                 )
             Spacer()
                 .frame(height: 40)
-            if localization == TimeZone.current.identifier {
+            if viewModel.localization == TimeZone.current.identifier {
                 Text("This is your actual time!")
                     .font(.title.bold())
-                    .foregroundColor(Color("appGrey"))
+                    .foregroundColor(Color.appGrey)
             }
             HStack {
                 Text("Actual time in")
-                    .font(.title2)
                     .fontWeight(.thin)
-                    .foregroundColor(Color("appGrey"))
-                Text(localizationName)
-                    .font(.title2)
+                Text(viewModel.localizationName)
                     .fontWeight(.bold)
-                    .foregroundColor(Color("appGrey"))
                 Text("is:")
-                    .font(.title2)
                     .fontWeight(.thin)
-                    .foregroundColor(Color("appGrey"))
             }
+            .font(.title2)
+            .foregroundColor(Color.appGrey)
         }
     }
     
@@ -161,30 +146,28 @@ struct MainView: View {
         VStack {
             Spacer()
                 .frame(height: 30)
-            Text(timeFormatter.string(from: viewModel.time))
+            Text(viewModel.timeFormatter.string(from: viewModel.time))
                 .font(.system(size: 90, weight: .black))
-                .foregroundColor(Color("appGrey"))
                 .onReceive(timer) { _ in
-                    viewModel.getTime(for: localization)
-                    getLocalizationName()
+                    viewModel.getTime(for: viewModel.localization)
+                    viewModel.getLocalizationName()
                 }
             
             Spacer()
                 .frame(height: 30)
             HStack {
                 Spacer()
-                Text(dateFormatter.string(from: viewModel.date))
-                    .foregroundColor(Color("appGrey"))
+                Text(viewModel.dateFormatter.string(from: viewModel.date))
                     .font(.title2)
                     .fontWeight(.light)
                     .onReceive(timer) { _ in
-                        dateFormatter.locale = Locale(identifier: "en_us")
-                        viewModel.getDate(for: localization)
+                        viewModel.getDate(for: viewModel.localization)
                         viewModel.getLocalTimes()
                     }
             }
             .padding(.horizontal)
         }
+        .foregroundColor(Color.appGrey)
     }
     
     var footer: some View {
@@ -194,22 +177,22 @@ struct MainView: View {
                     .padding(.top)
                     .font(.largeTitle)
                     .fontWeight(.black)
-                    .foregroundColor(Color("appRed"))
+                    .foregroundColor(Color.appRed)
                 HStack {
                     Rectangle()
                         .frame(width: 6, height: 6)
-                    Text(viewModel.getAbbrevation(from: localization))
+                    Text(viewModel.getAbbrevation(from: viewModel.localization))
                         .font(.subheadline)
                         .fontWeight(.bold)
                 }
                 .foregroundColor(.white)
                 
-                Text("IANA time zone identifier for \(localizationName) is \(localization)")
+                Text("IANA time zone identifier for \(viewModel.localizationName) is \(viewModel.localization)")
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .foregroundColor(.white)
                     .padding()
-                    .background(Color("appLightGrey"))
+                    .background(Color.appLightGrey)
                 
                 Spacer()
             }
@@ -217,7 +200,7 @@ struct MainView: View {
             .frame(maxWidth: .infinity)
             Spacer()
         }
-        .background(Color("appGrey").ignoresSafeArea())
+        .background(Color.appGrey.ignoresSafeArea())
     }
     
     var otherCities: some View {
@@ -226,14 +209,13 @@ struct MainView: View {
             ForEach(viewModel.citiesDict.sorted(by: >), id: \.key) { key, value in
                 VStack(alignment: .trailing) {
                     Text(key)
-                        .foregroundColor(Color("appGrey"))
                         .font(.footnote)
                         .fontWeight(.bold)
-                    Text(shortTimeFormatter.string(from: value))
-                        .foregroundColor(Color("appGrey"))
+                    Text(viewModel.shortTimeFormatter.string(from: value))
                         .font(.caption)
                         .fontWeight(.thin)
                 }
+                .foregroundColor(Color.appGrey)
                 .padding(2)
                 .padding(.horizontal, 2)
                 .background(Color("appLight"))
@@ -243,18 +225,6 @@ struct MainView: View {
             }
         }
         .padding(.horizontal)
-    }
-    
-    // MARK: - Functions
-    func getLocalizationName() {
-        let localizationArray = localization.components(separatedBy: "/")
-        localizationName = localizationArray.last!.replacingOccurrences(of: "_", with: " ")
-    }
-    
-    func setupFormatters() {
-        timeFormatter.dateFormat = "HH:mm:ss"
-        dateFormatter.dateFormat = "EEEE, MMMM d YYYY"
-        shortTimeFormatter.dateFormat = "HH:mm"
     }
 }
 
