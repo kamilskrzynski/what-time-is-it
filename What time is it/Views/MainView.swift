@@ -43,55 +43,59 @@ struct MainView: View {
                 viewModel.setupFormatters()
             }
             if viewModel.isSearchToggle {
-                VStack(spacing: 0) {
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                            .font(.title3)
-                            .foregroundColor(.black.opacity(0.5))
-                        TextField("Search", text: $viewModel.searchText)
-                        Button {
-                            withAnimation {
-                                viewModel.isSearchToggle = false
-                            }
-                        } label: {
-                            Image(systemName: "xmark")
-                                .font(.title3)
-                                .foregroundColor(.black.opacity(0.5))
-                        }
-                    }
-                    .padding()
-                    .background(Color.appLight)
-                    .padding(.vertical, 4)
-                    
-                    ForEach(viewModel.localizationsArray.filter { $0.replacingOccurrences(of: "_", with: " ").lowercased().components(separatedBy: "/").contains(viewModel.searchText.lowercased()) }, id: \.self) { result in
-                        Button {
-                            withAnimation {
-                                viewModel.localization = result
-                                viewModel.isSearchToggle = false
-                            }
-                        } label: {
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text(result.components(separatedBy: "/")[1].replacingOccurrences(of: "_", with: " "))
-                                        .font(.title3)
-                                        .bold()
-                                    Text(result)
-                                        .font(.caption2)
-                                        .fontWeight(.light)
-                                }
-                                .foregroundColor(Color.appGrey)
-                                Spacer()
-                            }
-                            .padding(.horizontal)
-                            .padding(.vertical, 2)
-                            .background(Color.appLight)
-                        }
-                    }
-                    Spacer()
-                }
-                .padding(.horizontal)
+                searchBar
             }
         }
+    }
+    
+    var searchBar: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .font(.title3)
+                    .foregroundColor(.black.opacity(0.5))
+                TextField("Search", text: $viewModel.searchText)
+                Button {
+                    withAnimation {
+                        viewModel.isSearchToggle = false
+                    }
+                } label: {
+                    Image(systemName: "xmark")
+                        .font(.title3)
+                        .foregroundColor(.black.opacity(0.5))
+                }
+            }
+            .padding()
+            .background(Color.appLight)
+            .padding(.vertical, 4)
+            
+            ForEach(viewModel.localizationsArray.filter { $0.replacingOccurrences(of: "_", with: " ").lowercased().components(separatedBy: "/").contains(viewModel.searchText.lowercased()) }, id: \.self) { result in
+                Button {
+                    withAnimation {
+                        viewModel.localization = result
+                        viewModel.isSearchToggle = false
+                    }
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(result.components(separatedBy: "/")[1].replacingOccurrences(of: "_", with: " "))
+                                .font(.title3)
+                                .bold()
+                            Text(result)
+                                .font(.caption2)
+                                .fontWeight(.light)
+                        }
+                        .foregroundColor(Color.appGrey)
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 2)
+                    .background(Color.appLight)
+                }
+            }
+            Spacer()
+        }
+        .padding(.horizontal)
     }
     
     var header: some View {
@@ -158,6 +162,17 @@ struct MainView: View {
             HStack {
                 Spacer()
                 Text(viewModel.dateFormatter.string(from: viewModel.date))
+                    .font(.title2)
+                    .fontWeight(.light)
+                    .onReceive(timer) { _ in
+                        viewModel.getDate(for: viewModel.localization)
+                        viewModel.getLocalTimes()
+                    }
+            }
+            .padding(.horizontal)
+            HStack {
+                Spacer()
+                Text("\(viewModel.dayOfTheYear)\(viewModel.checkDayOfTheYear()) day of the year.")
                     .font(.title2)
                     .fontWeight(.light)
                     .onReceive(timer) { _ in

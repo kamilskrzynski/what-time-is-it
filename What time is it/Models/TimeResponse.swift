@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Model created to get specific time from API
 struct TimeResponse: Codable {
     
     let year: Int

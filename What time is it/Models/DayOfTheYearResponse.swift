@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Model created to get specific day of the year for given date from API
 struct DayOfTheYearResponse: Codable {
     
     let day: Int

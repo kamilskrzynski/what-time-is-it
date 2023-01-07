@@ -9,8 +9,11 @@ import Foundation
 
 final class MainViewModel: ObservableObject {
     
+    
+    /// Variables
     @Published var time: Date = Date()
     @Published var date: Date = Date()
+    @Published var dayOfTheYear: Int = 0
     @Published var citiesDict = [String: Date]()
     
     @Published var isSearchToggle = false
@@ -24,25 +27,37 @@ final class MainViewModel: ObservableObject {
     let localizationsArray = TimeZone.knownTimeZoneIdentifiers
     let cities = ["Los Angeles", "New York", "London", "Paris", "Kiev", "Tokyo"]
     
+    
+    /// Getting time from API for given city
+    /// - Parameter city: City name
     public func getTime(for city: String) {
-        APIHandler.shared.getTime(for: city) { timeViewModel in
+        APIHandler.shared.getTime(for: city) { timeResponse in
             var timeComponents = DateComponents()
-            timeComponents.hour = timeViewModel.hour
-            timeComponents.minute = timeViewModel.minute
-            timeComponents.second = timeViewModel.seconds
+            timeComponents.hour = timeResponse.hour
+            timeComponents.minute = timeResponse.minute
+            timeComponents.second = timeResponse.seconds
             
             DispatchQueue.main.async {
                 self.time = Calendar.current.date(from: timeComponents)!
             }
         }
+        
     }
     
+    /// Getting date from API for given city
+    /// - Parameter city: City name
     public func getDate(for city: String) {
-        APIHandler.shared.getTime(for: city) { timeViewModel in
+        APIHandler.shared.getTime(for: city) { timeResponse in
             var dateComponents = DateComponents()
-            dateComponents.day = timeViewModel.day
-            dateComponents.month = timeViewModel.month
-            dateComponents.year = timeViewModel.year
+            dateComponents.day = timeResponse.day
+            dateComponents.month = timeResponse.month
+            dateComponents.year = timeResponse.year
+            
+            APIHandler.shared.getDayOfTheYear(year: timeResponse.year, month: timeResponse.month, day: timeResponse.day) { dayOfTheYearResponse in
+                DispatchQueue.main.async {
+                    self.dayOfTheYear = dayOfTheYearResponse.day
+                }
+            }
             
             DispatchQueue.main.async {
                 self.date = Calendar.current.date(from: dateComponents)!
@@ -50,13 +65,31 @@ final class MainViewModel: ObservableObject {
         }
     }
     
+    
+    /// Checks what day it is and returns adjective version of number
+    /// - Returns: adjective version of number
+    func checkDayOfTheYear() -> String {
+        switch dayOfTheYear {
+        case 1:
+            return "st"
+        case 2:
+            return "nd"
+        case 3:
+            return "rd"
+        default:
+            return "th"
+        }
+    }
+    
+    
+    /// Getting local time for given array of cities
     func getLocalTimes() {
         for city in cities {
             let changedCity = city.replacingOccurrences(of: " ", with: "_")
-            APIHandler.shared.getTime(for: localizationsArray.first(where: { $0.contains(changedCity)}) ?? "") { timeViewModel in
+            APIHandler.shared.getTime(for: localizationsArray.first(where: { $0.contains(changedCity)}) ?? "") { timeResponse in
                 var timeComponents = DateComponents()
-                timeComponents.hour = timeViewModel.hour
-                timeComponents.minute = timeViewModel.minute
+                timeComponents.hour = timeResponse.hour
+                timeComponents.minute = timeResponse.minute
                 
                 DispatchQueue.main.async {
                     self.citiesDict.updateValue(Calendar.current.date(from: timeComponents)!, forKey: city)
@@ -66,6 +99,10 @@ final class MainViewModel: ObservableObject {
         }
     }
     
+    
+    /// Getting abbrevation name for given localization
+    /// - Parameter localization: given localization
+    /// - Returns: Timezone name
     public func getAbbrevation(from localization: String) -> String {
         let timezone = TimeZone.init(identifier: localization)?.abbreviation() ?? ""
         var timezoneAbbr: String = ""
@@ -150,7 +187,7 @@ final class MainViewModel: ObservableObject {
         return timezoneAbbr
     }
     
-    /// Setting up formatters
+    /// Setting up specific DateFormatters
     func setupFormatters() {
         // timeFormatter
         timeFormatter.dateFormat = "HH:mm:ss"
@@ -163,6 +200,8 @@ final class MainViewModel: ObservableObject {
         shortTimeFormatter.dateFormat = "HH:mm"
     }
     
+    
+    /// Getting City name from localization timezone
     func getLocalizationName() {
         let localizationArray = localization.components(separatedBy: "/")
         localizationName = localizationArray.last!.replacingOccurrences(of: "_", with: " ")
